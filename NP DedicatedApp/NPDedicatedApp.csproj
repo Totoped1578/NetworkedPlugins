@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>NP_DedicatedApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Mirror">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <HintPath>..\Libs\Mirror.dll</HintPath>
+    </Reference>
+    <Reference Include="NetworkedPlugins.API">
+      <HintPath>..\Output\NetworkedPlugins.API.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
