@@ -2,13 +2,14 @@
 using LiteNetLib.Utils;
 using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
-using Newtonsoft.Json;
+using NetworkedPlugins.API.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utf8Json;
 
 namespace HubAddon
 {
@@ -17,29 +18,21 @@ namespace HubAddon
         addonAuthor = "Killers0992",
         addonName = "HubAddon",
         addonVersion = "1.0.0")]
-    public class HubClient : NPAddonClient
+    public class HubClient : NPAddonClient<HubConfig.ConfigClient>
     {
-        public HubConfig.ConfigClient config;
         public Dictionary<string, string> registeredCommands { get; set; } = new Dictionary<string, string>();
 
 
         public override void OnEnable()
         {
-            if (!Directory.Exists(Path.Combine(defaultPath, "HubAddon")))
-                Directory.CreateDirectory(Path.Combine(defaultPath, "HubAddon"));
-            if (!File.Exists(Path.Combine(defaultPath, "HubAddon", "config.json")))
-                File.WriteAllText(Path.Combine(defaultPath, "HubAddon", "config.json"), JsonConvert.SerializeObject(new HubConfig.ConfigClient(), Formatting.Indented));
-            config = JsonConvert.DeserializeObject<HubConfig.ConfigClient>(File.ReadAllText(Path.Combine(defaultPath, "HubAddon", "config.json")));
-            File.WriteAllText(Path.Combine(defaultPath, "HubAddon", "config.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
-            Logger.Info("Config loaded.");
-            if (config.isLobby)
+            if (Config.isLobby)
             {
                 Exiled.Events.Handlers.Server.WaitingForPlayers += Server_WaitingForPlayers;
             }
             Exiled.Events.Handlers.Server.SendingConsoleCommand += Server_SendingConsoleCommand;
         }
 
-        public override void OnReady()
+        public override void OnReady(NPServer server)
         {
             Logger.Info("Request command sync");
             NetDataWriter writer = new NetDataWriter();
@@ -70,17 +63,11 @@ namespace HubAddon
             HubGlobals.InitLobby();
         }
 
-        public override void OnMessageReceived(NetDataReader reader)
+        public override void OnMessageReceived(NPServer server, NetDataReader reader)
         {
             byte type = reader.GetByte();
             switch (type)
             {
-                //Register commands
-                case 0:
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(reader.GetString());
-                    registeredCommands = data;
-                    Logger.Info($"Received {data.Count} commands, {string.Join(",\n", data.Keys)}");
-                    break;
                 //Update hub
                 case 1:
                     NetDataWriter writer = new NetDataWriter();

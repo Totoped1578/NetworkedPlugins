@@ -34,6 +34,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj" />
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -68,10 +69,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BungeeCord\BungeeCord\bin\Debug\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -85,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomConsoleExecutor.cs" />
     <Compile Include="NPClient.cs" />
     <Compile Include="NPHost.cs" />
     <Compile Include="MainClass.cs" />
@@ -94,12 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj">
-      <Project>{a22b63c5-2c57-42f8-b696-ab6c7c526416}</Project>
-      <Name>NetworkedPlugins.API</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

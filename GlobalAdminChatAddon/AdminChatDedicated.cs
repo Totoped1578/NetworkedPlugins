@@ -15,7 +15,7 @@ namespace GlobalAdminChatAddon
         addonAuthor = "Killers0992",
         addonName = "GlobalAdminChatAddon",
         addonVersion = "1.0.0")]
-    public class AdminChatDedicated : NPAddonDedicated
+    public class AdminChatDedicated : NPAddonDedicated<AddonConfig>
     {
 
         public override void OnMessageReceived(NPServer server, NetDataReader reader)

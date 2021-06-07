@@ -1,6 +1,7 @@
 ﻿using Exiled.API.Features;
 using LiteNetLib.Utils;
 using NetworkedPlugins.API.Interfaces;
+using NetworkedPlugins.API.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,82 +12,167 @@ namespace NetworkedPlugins.API.Models
 {
     public class NPPlayer : PlayerFuncs
     {
-        public NPPlayer(NPServer server, string UserName, string UserID, int role)
+        public NPPlayer(NPServer server, string UserID)
         {
             this.server = server;
-            this._username = UserName;
-            this._userid = UserID;
-            this._role = role;
+            this.UserID = UserID;
         }
-        private string _username;
-        private string _userid;
-        private int _role;
+
         public NPServer server { get; set; }
-
-        public override string UserName => _username;
-
-        public override string UserID => _userid;
-
-        public override int Role => _role;
 
         public override void Kill()
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)0);
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)0
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
 
         public override void SendReportMessage(string message)
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)1);
+            var writer = new NetDataWriter();
             writer.Put(message);
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)1,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
 
         public override void SendRAMessage(string message)
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)2);
+            var writer = new NetDataWriter();
             writer.Put(message);
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)2,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
 
         public override void SendConsoleMessage(string message, string color = "GREEN")
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)3);
+            var writer = new NetDataWriter();
             writer.Put(message);
-            writer.Put(color.ToUpper());
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            writer.Put(color);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)3,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
 
         public override void Redirect(ushort port)
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)4);
+            var writer = new NetDataWriter();
             writer.Put(port);
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)4,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
 
         public override void Disconnect(string reason)
         {
-            NetDataWriter writer = new NetDataWriter();
-            writer.Put((byte)4);
-            writer.Put(UserID);
-            writer.Put((byte)5);
+            var writer = new NetDataWriter();
             writer.Put(reason);
-            server.peer.Send(writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)5,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void SendHint(string message, float duration)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(message);
+            writer.Put(duration);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)6,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void SendPosition(bool state = false)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(state);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)7,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void SendRotation(bool state = false)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(state);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)8,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void Teleport(float x, float y, float z)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(x);
+            writer.Put(y);
+            writer.Put(z);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)9,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void SetGodmode(bool state = false)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(state);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)10,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void SetNoclip(bool state = false)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(state);
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)11,
+                Data = writer.Data
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
+        }
+
+        public override void ClearInventory()
+        {
+            server.processor.Send<PlayerInteractPacket>(server.peer, new PlayerInteractPacket()
+            {
+                UserID = UserID,
+                Type = (byte)12,
+                Data = new byte[0]
+            }, LiteNetLib.DeliveryMethod.ReliableOrdered);
         }
     }
 }

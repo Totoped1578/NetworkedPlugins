@@ -9,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace GlobalStats.Commands
 {
-    [NPCommand("test")]
+    [NPCommand]
     public class TestCmd : ICommand
     {
+        public string CommandName { get; } = "test";
+        public string Description { get; } = "Test command";
+        public string Permission { get; } = "";
+        public bool IsRaCommand { get; } = false;
+
         public void Invoke(PlayerFuncs player, List<string> arguments)
         {
             NPManager.Logger.Info("Execute command TEST");

@@ -6,7 +6,7 @@ namespace NetworkedPlugins.API
 {
     public class NPAddonItem
     {
-        public object addon { get; set; }
+        public IAddon<IConfig> addon { get; set; }
         public NPAddonInfo info { get; set; }
     }
 }

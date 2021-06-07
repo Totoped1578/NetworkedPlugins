@@ -11,7 +11,7 @@ namespace ExampleAddon
         addonAuthor = "Killers0992",
         addonName = "GlobalBroadcast",
         addonVersion = "0.0.1")]
-    public class GlobalBroadcastHost : NPAddonHost
+    public class GlobalBroadcastHost : NPAddonHost<AddonConfig>
     {
         public override void OnEnable()
         {

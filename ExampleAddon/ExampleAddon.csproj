@@ -34,6 +34,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj" />
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -59,16 +60,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddonConfig.cs" />
     <Compile Include="GlobalBroadcastClient.cs" />
     <Compile Include="GlobalBroadcastDedicated.cs" />
     <Compile Include="GlobalBroadcastHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj">
-      <Project>{a22b63c5-2c57-42f8-b696-ab6c7c526416}</Project>
-      <Name>NetworkedPlugins.API</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

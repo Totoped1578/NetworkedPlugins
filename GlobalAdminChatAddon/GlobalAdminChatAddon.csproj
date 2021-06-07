@@ -35,6 +35,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj" />
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\..\..\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
@@ -71,9 +72,6 @@
     <Reference Include="Mirror">
       <HintPath>..\..\..\..\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="NetworkedPlugins.API">
-      <HintPath>..\Output\NetworkedPlugins.API.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -87,6 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddonConfig.cs" />
     <Compile Include="AdminChatClient.cs" />
     <Compile Include="AdminChatDedicated.cs" />
     <Compile Include="AdminChatHost.cs" />

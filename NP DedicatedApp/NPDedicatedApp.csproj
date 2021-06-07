@@ -7,16 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NetworkedPlugins.API\NetworkedPlugins.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Mirror">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <HintPath>..\Libs\Mirror.dll</HintPath>
-    </Reference>
-    <Reference Include="NetworkedPlugins.API">
-      <HintPath>..\Output\NetworkedPlugins.API.dll</HintPath>
     </Reference>
   </ItemGroup>
 

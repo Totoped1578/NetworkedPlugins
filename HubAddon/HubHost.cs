@@ -7,13 +7,13 @@ using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
 using NetworkedPlugins.API.Interfaces;
 using NetworkedPlugins.API.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utf8Json;
 
 namespace HubAddon
 {
@@ -22,9 +22,8 @@ namespace HubAddon
         addonAuthor = "Killers0992",
         addonName = "HubAddon",
         addonVersion = "1.0.0")]
-    public class HubHost : NPAddonHost
+    public class HubHost : NPAddonHost<HubConfig.ConfigHost>
     {
-        public HubConfig.ConfigHost config;
         public Dictionary<string, string> registeredCommands { get; set; } = new Dictionary<string, string>()
         {
             { "lobby", "hub.lobby" },
@@ -39,14 +38,7 @@ namespace HubAddon
 
         public override void OnEnable()
         {
-            if (!Directory.Exists(Path.Combine(defaultPath, "HubAddon")))
-                Directory.CreateDirectory(Path.Combine(defaultPath, "HubAddon"));
-            if (!File.Exists(Path.Combine(defaultPath, "HubAddon", "config.json")))
-                File.WriteAllText(Path.Combine(defaultPath, "HubAddon", "config.json"), JsonConvert.SerializeObject(new HubConfig.ConfigHost(), Formatting.Indented));
-            config = JsonConvert.DeserializeObject<HubConfig.ConfigHost>(File.ReadAllText(Path.Combine(defaultPath, "HubAddon", "config.json")));
-            File.WriteAllText(Path.Combine(defaultPath, "HubAddon", "config.json"), JsonConvert.SerializeObject(config, Formatting.Indented));
-            Logger.Info("Config loaded.");
-            if (config.isLobby)
+            if (Config.isLobby)
             {
                 Exiled.Events.Handlers.Server.WaitingForPlayers += Server_WaitingForPlayers;
             }
@@ -90,28 +82,28 @@ namespace HubAddon
             {
                 case "HUB":
                 case "LOBBY":
-                    if (isServerOnline(config.LobbyPort))
+                    if (isServerOnline(Config.LobbyPort))
                     {
-                        plr.Redirect(config.LobbyPort);
-                        plr.SendConsoleMessage($"Connecting to server <color=yellow>{config.GetServerName(config.LobbyPort)}</color>...", "green");
+                        plr.Redirect(Config.LobbyPort);
+                        plr.SendConsoleMessage($"Connecting to server <color=yellow>{Config.GetServerName(Config.LobbyPort)}</color>...", "green");
                     }
                     else
                     {
-                        plr.SendConsoleMessage($"Server <color=yellow>{config.GetServerName(config.LobbyPort)}</color> is offline.", "red");
+                        plr.SendConsoleMessage($"Server <color=yellow>{Config.GetServerName(Config.LobbyPort)}</color> is offline.", "red");
                     }
                     break;
                 case "SERVERS":
                     string retstr = "Servers: \n";
                     foreach(var server in hubservers.Values)
                     {
-                        retstr += $" - <color=yellow>{config.GetServerName(server.ServerPort)}</color> {server.Players.Count}/{server.MaxPlayers}";
+                        retstr += $" - <color=yellow>{Config.GetServerName(server.ServerPort)}</color> {server.Players.Count}/{server.MaxPlayers}";
                     }
                     plr.SendConsoleMessage(retstr);
                     break;
                 case "CHANGESERVER":
                     if (arguments.Count != 0)
                     {
-                        var server = config.GetServerByName(arguments[0]);
+                        var server = Config.GetServerByName(arguments[0]);
                         if (server != null)
                         {
                             if (isServerOnline(server.Item2))
@@ -165,10 +157,6 @@ namespace HubAddon
             {
                 //Get registered command
                 case 0:
-                    NetDataWriter writer = new NetDataWriter();
-                    writer.Put((byte)0);
-                    writer.Put(JsonConvert.SerializeObject(registeredCommands));
-                    SendData(server, writer);
                     Logger.Info($"Server {server.FullAddress} requested command sync.");
                     break;
                 //Execute command

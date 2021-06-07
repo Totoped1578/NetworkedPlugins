@@ -3,6 +3,7 @@ using LiteNetLib.Utils;
 using MEC;
 using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
+using NetworkedPlugins.API.Models;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace ExampleAddon
         addonAuthor = "Killers0992", 
         addonName = "GlobalBroadcast", 
         addonVersion = "0.0.1")]
-    public class GlobalBroadcastClient : NPAddonClient
+    public class GlobalBroadcastClient : NPAddonClient<AddonConfig>
     {
         public override void OnEnable()
         {
@@ -21,12 +22,12 @@ namespace ExampleAddon
             Timing.RunCoroutine(SendDatas());
         }
 
-        public override void OnReady()
+        public override void OnReady(NPServer server)
         {
             Logger.Info("Addon is ready");
         }
 
-        public override void OnMessageReceived(NetDataReader reader)
+        public override void OnMessageReceived(NPServer server, NetDataReader reader)
         {
             Logger.Info($"Received ( \"{reader.GetString()}\" )");
         }

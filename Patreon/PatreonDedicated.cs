@@ -19,7 +19,7 @@ namespace Patreon
       addonAuthor = "Killers0992",
       addonName = "Patreon",
       addonVersion = "1.0.0")]
-    public class PatreonDedicated : NPAddonDedicated
+    public class PatreonDedicated : NPAddonDedicated<AddonConfig>
     {
         public string key = "";
         public string bottoken = "";

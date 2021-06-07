@@ -2,6 +2,7 @@
 using LiteNetLib.Utils;
 using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
+using NetworkedPlugins.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Patreon
        addonAuthor = "Killers0992",
        addonName = "Patreon",
        addonVersion = "1.0.0")]
-    public class PatreonClient : NPAddonClient
+    public class PatreonClient : NPAddonClient<AddonConfig>
     {
         public override void OnEnable()
         {
@@ -30,7 +31,7 @@ namespace Patreon
             SendData(wr);
         }
 
-        public override void OnMessageReceived(NetDataReader reader)
+        public override void OnMessageReceived(NPServer server, NetDataReader reader)
         {
             string userid = reader.GetString();
             string role = reader.GetString();
@@ -40,15 +41,13 @@ namespace Patreon
             {
                 if (plr.Group == null)
                 {
-
-                        UserGroup r = new UserGroup();
-                        r.BadgeColor = roleColor;
-                        r.BadgeText = role;
-                        r.Cover = false;
-                        r.HiddenByDefault = false;
-                        plr.ReferenceHub.serverRoles.SetGroup(r, false, true, true);
+                    UserGroup r = new UserGroup();
+                    r.BadgeColor = roleColor;
+                    r.BadgeText = role;
+                    r.Cover = false;
+                    r.HiddenByDefault = false;
+                    plr.ReferenceHub.serverRoles.SetGroup(r, false, true, true);
                 }
-
             }
         }
     }

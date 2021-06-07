@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetworkedPlugins.API.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,9 @@ namespace HubAddon
 {
     public class HubConfig
     {
-        public class ConfigDedicated
+        public class ConfigDedicated : IConfig
         {
+            public bool IsEnabled { get; set; } = true;
             public ushort LobbyPort { get; set; } = 7777;
             public Dictionary<string, ServerInfo> Servers { get; set; } = new Dictionary<string, ServerInfo>() { { "localhost:7777", new ServerInfo() { ServerName = "Test server" } } };
             public string GetServerName(ushort port)
@@ -40,8 +42,9 @@ namespace HubAddon
             }
         }
 
-        public class ConfigHost
+        public class ConfigHost : IConfig
         {
+            public bool IsEnabled { get; set; } = true;
             public bool isLobby { get; set; } = false;
             public ushort LobbyPort { get; set; } = 7777;
             public Dictionary<string, ServerInfo> Servers { get; set; } = new Dictionary<string, ServerInfo>() { { "localhost:7777", new ServerInfo() { ServerName = "Test server" } } };
@@ -80,8 +83,9 @@ namespace HubAddon
             public bool Restricted { get; set; } = false;
         }
 
-        public class ConfigClient
+        public class ConfigClient : IConfig
         {
+            public bool IsEnabled { get; set; } = true;
             public bool isLobby { get; set; } = false;
             public ushort LobbyPort { get; set; } = 7777;
         }

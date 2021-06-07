@@ -2,6 +2,7 @@
 using LiteNetLib.Utils;
 using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
+using NetworkedPlugins.API.Interfaces;
 using NetworkedPlugins.API.Models;
 
 namespace ExampleAddon
@@ -11,7 +12,7 @@ namespace ExampleAddon
         addonAuthor = "Killers0992",
         addonName = "GlobalBroadcast",
         addonVersion = "0.0.1")]
-    public class GlobalBroadcastDedicated : NPAddonDedicated
+    public class GlobalBroadcastDedicated : NPAddonDedicated<AddonConfig>
     {
         public override void OnEnable()
         {

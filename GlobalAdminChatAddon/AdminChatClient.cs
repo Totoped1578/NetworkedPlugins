@@ -1,6 +1,7 @@
 ﻿using LiteNetLib.Utils;
 using NetworkedPlugins.API;
 using NetworkedPlugins.API.Attributes;
+using NetworkedPlugins.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace GlobalAdminChatAddon
         addonAuthor = "Killers0992",
         addonName = "GlobalAdminChatAddon",
         addonVersion = "1.0.0")]
-    public class AdminChatClient : NPAddonClient
+    public class AdminChatClient : NPAddonClient<AddonConfig>
     {
         public override void OnEnable()
         {
@@ -33,7 +34,7 @@ namespace GlobalAdminChatAddon
             }
         }
 
-        public override void OnMessageReceived(NetDataReader reader)
+        public override void OnMessageReceived(NPServer server, NetDataReader reader)
         {
             foreach (var h in ReferenceHub.GetAllHubs())
             {

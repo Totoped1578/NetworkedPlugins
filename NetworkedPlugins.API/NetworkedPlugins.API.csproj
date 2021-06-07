@@ -61,8 +61,17 @@
     <Reference Include="Mirror">
       <HintPath>..\Libs\Mirror.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.4.0\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,17 +85,36 @@
   <ItemGroup>
     <Compile Include="Attributes\NPAddonInfo.cs" />
     <Compile Include="Attributes\NPCommand.cs" />
+    <Compile Include="Extensions\Reflection.cs" />
+    <Compile Include="Interfaces\IAddon.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\IConfig.cs" />
     <Compile Include="Interfaces\PlayerFuncs.cs" />
-    <Compile Include="Models\NPAddonsInfo.cs" />
     <Compile Include="Models\NPPlayer.cs" />
     <Compile Include="Models\NPServer.cs" />
+    <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\Rotation.cs" />
     <Compile Include="NPAddonClient.cs" />
     <Compile Include="NPAddonDedicated.cs" />
     <Compile Include="NPAddonHost.cs" />
     <Compile Include="NPAddonItem.cs" />
     <Compile Include="NPLogger.cs" />
     <Compile Include="NPManager.cs" />
+    <Compile Include="Packets\ClearBroadcastsPacket.cs" />
+    <Compile Include="Packets\CommandInfoPacket.cs" />
+    <Compile Include="Packets\ConsoleResponsePacket.cs" />
+    <Compile Include="Packets\ExecuteCommandPacket.cs" />
+    <Compile Include="Packets\ExecuteConsoleCommandPacket.cs" />
+    <Compile Include="Packets\PlayerInfoPacket.cs" />
+    <Compile Include="Packets\PlayerInteractPacket.cs" />
+    <Compile Include="Packets\ReceiveAddonDataPacket.cs" />
+    <Compile Include="Packets\ReceiveAddonsPacket.cs" />
+    <Compile Include="Packets\ReceiveCommandsPacket.cs" />
+    <Compile Include="Packets\ReceivePlayersDataPacket.cs" />
+    <Compile Include="Packets\RoundRestartPacket.cs" />
+    <Compile Include="Packets\SendBroadcastPacket.cs" />
+    <Compile Include="Packets\SendHintPacket.cs" />
+    <Compile Include="Packets\UpdatePlayerInfoPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

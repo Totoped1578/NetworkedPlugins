@@ -1,6 +1,8 @@
 ﻿using LiteNetLib;
 using LiteNetLib.Utils;
+using NetworkedPlugins.API.Interfaces;
 using NetworkedPlugins.API.Models;
+using NetworkedPlugins.API.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,24 +11,26 @@ using System.Threading.Tasks;
 
 namespace NetworkedPlugins.API
 {
-    public class NPAddonClient
+    public abstract class NPAddonClient<TConfig> : IAddon<TConfig>
+        where TConfig : IConfig, new()
     {
-        public NPManager Manager;
-        public NPLogger Logger;
-        public string addonId;
+        public NPManager Manager { get; set; }
+        public NPLogger Logger { get; set; }
+        public string addonId { get; set; }
 
-        public string defaultPath;
+        public string defaultPath { get; set; }
+        public string addonPath { get; set; }
 
         public void SendData(NetDataWriter writer)
         {
-            NetDataWriter wr = new NetDataWriter();
-            wr.Put((byte)3);
-            wr.Put(addonId);
-            wr.PutBytesWithLength(writer.Data, 0, writer.Length);
-            Manager.networkListener.SendToAll(wr, LiteNetLib.DeliveryMethod.ReliableOrdered);
+            Manager._netPacketProcessor.Send<ReceiveAddonDataPacket>(Manager.networkListener, new ReceiveAddonDataPacket()
+            {
+                AddonID = addonId,
+                Data = writer.Data
+            }, DeliveryMethod.ReliableOrdered);
         }
 
-        public virtual void OnMessageReceived(NetDataReader reader)
+        public virtual void OnMessageReceived(NPServer server, NetDataReader reader)
         {
 
         }
@@ -36,9 +40,22 @@ namespace NetworkedPlugins.API
 
         }
 
-        public virtual void OnReady()
+        public virtual void OnReady(NPServer server)
         {
 
         }
+
+        public void OnConsoleCommand(string cmd, List<string> arguments)
+        {
+
+        }
+
+        public void OnConsoleResponse(NPServer server, string command, string response, bool isRa)
+        {
+
+        }
+
+        public TConfig Config { get; } = new TConfig();
+        public int CompareTo(IAddon<IConfig> other) => 0;
     }
 }

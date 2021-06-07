@@ -15,7 +15,7 @@ namespace GlobalAdminChatAddon
         addonAuthor = "Killers0992",
         addonName = "GlobalAdminChatAddon",
         addonVersion = "1.0.0")]
-    public class AdminChatHost : NPAddonHost
+    public class AdminChatHost : NPAddonHost<AddonConfig>
     {
         public override void OnEnable()
         {

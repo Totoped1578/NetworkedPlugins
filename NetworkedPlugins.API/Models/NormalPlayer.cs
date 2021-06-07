@@ -23,6 +23,56 @@ namespace NetworkedPlugins.API.Models
 
         public override int Role => (int)_player.Role;
 
+        public override bool DoNotTrack => _player.DoNotTrack;
+
+        public override string GroupName => _player.GroupName;
+
+        public override string RankColor => _player.RankColor;
+
+        public override string RankName => _player.RankName;
+
+        public override string IPAddress => _player.IPAddress;
+
+        public override bool IsGodModeEnabled => _player.IsGodModeEnabled;
+
+        public override float Health => _player.Health;
+
+        public override int MaxHealth => _player.MaxHealth;
+
+        public override bool IsIntercomMuted => _player.IsIntercomMuted;
+
+        public override bool IsMuted => _player.IsMuted;
+
+        public override bool IsOverwatchEnabled => _player.IsOverwatchEnabled;
+
+        public override bool RemoteAdminAccess => _player.RemoteAdminAccess;
+
+        public override int PlayerID => _player.Id;
+
+        public override Position Position
+        {
+            get
+            {
+                return new Position() { x = _player.Position.x, y = _player.Position.y, z = _player.Position.z };
+            }
+            set
+            {
+                Position = value;
+            }
+        }
+
+        public override Rotation Rotation
+        {
+            get
+            {
+                return new Rotation() { x = _player.Rotation.x, y = _player.Rotation.y, z = _player.Rotation.z };
+            }
+            set
+            {
+                Rotation = value;
+            }
+        }
+
         public override void Disconnect(string reason)
         {
             ServerConsole.Disconnect(_player.GameObject, reason);
@@ -51,6 +101,45 @@ namespace NetworkedPlugins.API.Models
         public override void SendReportMessage(string message)
         {
             _player.SendConsoleMessage("[REPORTING] " + message, "GREEN");
+        }
+
+        public override void SendHint(string message, float duration)
+        {
+            _player.ShowHint(message, duration);
+        }
+
+        public override void SendPosition(bool state = false)
+        {
+            if (!_player.SessionVariables.ContainsKey("SP"))
+                _player.SessionVariables.Add("SP", state);
+            _player.SessionVariables["SP"] = state;
+        }
+
+        public override void SendRotation(bool state = false)
+        {
+            if (!_player.SessionVariables.ContainsKey("SR"))
+                _player.SessionVariables.Add("SR", state);
+            _player.SessionVariables["SR"] = state;
+        }
+
+        public override void Teleport(float x, float y, float z)
+        {
+            _player.Position = new UnityEngine.Vector3(x, y, z);
+        }
+
+        public override void SetGodmode(bool state = false)
+        {
+            _player.IsGodModeEnabled = state;
+        }
+
+        public override void SetNoclip(bool state = false)
+        {
+            _player.NoClipEnabled = state;
+        }
+
+        public override void ClearInventory()
+        {
+            _player.ClearInventory();
         }
 
         private void SendClientToServer(Player hub, ushort port)

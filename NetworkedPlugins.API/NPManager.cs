@@ -1,9 +1,14 @@
 ﻿using LiteNetLib;
+using LiteNetLib.Utils;
 using NetworkedPlugins.API.Attributes;
+using NetworkedPlugins.API.Extensions;
 using NetworkedPlugins.API.Interfaces;
 using NetworkedPlugins.API.Models;
+using NetworkedPlugins.API.Packets;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,43 +20,70 @@ namespace NetworkedPlugins.API
         public Dictionary<string, NPAddonItem> addons = new Dictionary<string, NPAddonItem>();
 
         public Dictionary<NetPeer, NPServer> servers = new Dictionary<NetPeer, NPServer>();
-        public Dictionary<string, Dictionary<string, Tuple<string, ICommand>>> commands { get; set; } = new Dictionary<string, Dictionary<string, Tuple<string, ICommand>>>();
 
-        public void RegisterCommand(string addonID, string commandName, string permission, ICommand command)
+        public Dictionary<string, Dictionary<string, ICommand>> commands = new Dictionary<string, Dictionary<string, ICommand>>();
+
+        public void RegisterCommand(string addonId, ICommand command)
         {
-            if (!commands.ContainsKey(addonID))
-                commands.Add(addonID, new Dictionary<string, Tuple<string, ICommand>>());
-            if (!commands[addonID].ContainsKey(commandName))
+
+            if (!commands.ContainsKey(addonId))
+                commands.Add(addonId, new Dictionary<string, ICommand>());
+            if (!commands[addonId].ContainsKey(command.CommandName.ToUpper()))
             {
-                commands[addonID].Add(commandName, new Tuple<string, ICommand>(permission, command));
+                commands[addonId].Add(command.CommandName.ToUpper(), command);
+                Logger.Info($"Command {command.CommandName.ToUpper()} registered in addon {addonId}");
             }
-            Logger.Info($"Command: {commandName} registered for addon {addons[addonID].info.addonName}");
         }
 
         public void ExecuteCommand(PlayerFuncs plr, string addonId, string commandName, List<string> arguments)
         {
-            if (commands[addonId].ContainsKey(commandName))
+            if (commands[addonId].ContainsKey(commandName.ToUpper()))
             {
-                commands[addonId][commandName].Item2.Invoke(plr, arguments);
+                commands[addonId][commandName.ToUpper()].Invoke(plr, arguments);
             }
         }
 
-        public Dictionary<string, string> GetCommands(string addonId)
+        public void LoadAddonConfig(string addonId)
         {
-            Dictionary<string, string> cmds2 = new Dictionary<string, string>();
-            if (!commands.ContainsKey(addonId))
-                commands.Add(addonId, new Dictionary<string, Tuple<string, ICommand>>());
-            foreach(var cmd in commands[addonId])
+            if (addons.TryGetValue(addonId, out NPAddonItem npdi))
             {
-                cmds2.Add(cmd.Key, cmd.Value.Item1);
+                if (!Directory.Exists(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName)))
+                {
+                    Directory.CreateDirectory(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName));
+                }
+                if (!File.Exists(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName, "config.json")))
+                {
+                    File.WriteAllText(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName, "config.json"), JsonConvert.SerializeObject(npdi.addon.Config, Formatting.Indented));
+                }
+                var cfg = (IConfig)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName, "config.json")), npdi.addon.Config.GetType());
+                File.WriteAllText(Path.Combine(npdi.addon.defaultPath, npdi.info.addonName, "config.json"), JsonConvert.SerializeObject(cfg, Formatting.Indented));
+                npdi.addon.Config.CopyProperties(cfg);
             }
-            return cmds2;
+        }
+
+        public List<CommandInfoPacket> GetCommands(string addonId)
+        {
+            List<CommandInfoPacket> cmds = new List<CommandInfoPacket>();
+            if (commands.TryGetValue(addonId, out Dictionary<string, ICommand> outCmds))
+            {
+                foreach (var cmd in outCmds)
+                {
+                    cmds.Add(new CommandInfoPacket()
+                    {
+                        AddonID = addonId,
+                        CommandName = cmd.Key,
+                        Description = cmd.Value.Description,
+                        Permission = cmd.Value.Permission,
+                        isRaCommand = cmd.Value.IsRaCommand
+                    });
+                }
+            }
+            return cmds;
         }
 
 
         public static NPLogger Logger;
-
-        public EventBasedNetListener eventListener;
+        public readonly NetPacketProcessor _netPacketProcessor = new NetPacketProcessor();
         public NetManager networkListener;
     }
 }
