@@ -146,7 +146,6 @@ namespace NetworkedPlugins
                 return;
 
             NetDataReader reader = new NetDataReader(packet.Data);
-            Logger.Info($"Update player info for {packet.UserID}, type {packet.Type}");
             switch (packet.Type)
             {
                 case 0:
@@ -200,7 +199,6 @@ namespace NetworkedPlugins
                 case 16:
                     player.PlayerID = reader.GetInt();
                     break;
-
             }
         }
 

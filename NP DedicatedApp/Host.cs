@@ -158,7 +158,6 @@ namespace NPDedicatedApp
 
             NetDataReader reader = new NetDataReader(packet.Data);
 
-            Logger.Info($"UpdatePlayerInfo, userid {packet.UserID}, type {packet.Type}");
             switch (packet.Type)
             {
                 case 0:

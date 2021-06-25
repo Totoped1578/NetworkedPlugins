@@ -14,6 +14,7 @@ namespace NPDedicatedApp
     {
         public static Host host;
         static void Main(string[] args)
+        
         {
             if (!Directory.Exists("./dependencies"))
                 Directory.CreateDirectory("./dependencies");
